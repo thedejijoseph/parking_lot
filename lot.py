@@ -28,7 +28,16 @@ class Slot:
     def __init__(self, id, car=None):
         self.id = id
         self.car = car
-        self.empty = False if self.car else True
+        self.empty = self.check()
+
+    def check(self):
+        return True if self.car == None else False
+
+    def __repr__(self):
+        if self.empty:
+            return "None"
+        else:
+            return f"[{self.car.plate_no}, {self.car.color}]"
 class Lot:
     def __init__(self, capacity):
         self.max_space = int(capacity)
@@ -75,23 +84,47 @@ def exit(lot, car):
     lot.remove_ticket(car)
 
 def find_plate_nos(lot, color):
+    """Find the registration numbers of all cars of a particular color."""
     plate_nos = []
     for slot in lot.slots.values():
         if not slot.empty:
-            if slot.car.color.lower() == color.lower:
+            if slot.car.color.lower() == color.lower():
                 plate_nos.append(slot.car.plate_no)
 
-    return plate_nos
+    if plate_nos:
+        return plate_nos
+    else:
+        return None
 
-def find_slot_no(plate_no):
-    pass
+def find_slot_no(lot, plate_no):
+    """Find the slot number in which a car with a given registration number is parked"""
+    for slot in lot.slots.values():
+        if not slot.empty:
+            if slot.car.plate_no.lower() == plate_no.lower():
+                return slot.id
 
-def find_slot_nos(color):
-    pass
+    return None
+
+def find_slot_nos(lot, color):
+    """Find the slot numbers where cars of a particular color are parked."""
+    slot_nos = []
+    for slot in lot.slots.values():
+        if not slot.empty:
+            if slot.car.color.lower() == color.lower():
+                slot_nos.append(slot.id)
+
+    if slot_nos:
+        return slot_nos
+    else:
+        return None
 
 green_lot = Lot(6)
 car = Car("axs0989", "black")
 
 enter(green_lot, car)
-print(find_plate_nos(green_lot, "black"))
+enter(green_lot, Car("afs5689", "yellow"))
+enter(green_lot, Car("sds5689", "yellow"))
+enter(green_lot, Car("dfs5689", "green"))
+
+print(find_slot_nos(green_lot, "yellow"))
 exit(green_lot, car)
