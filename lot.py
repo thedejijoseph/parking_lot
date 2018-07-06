@@ -8,58 +8,68 @@ class Car:
     def __init__(self, plate_no, color):
         self.plate_no = str(plate_no).upper()
         self.color = str(color).title()
-        self.parked = False
-        self.lot_no = None
+        self.slot_no = None
         self.ticket = None
 
     def __repr__(self):
         return f"[{self.plate_no}, {self.color}]"
 
 class Ticket:
-    def __init__(self, car, lot_no):
-        self.lot_no = None
+    def __init__(self, car, slot_no):
+        self.car = car
+        self.slot_no = slot_no
+        self.car.slot_no = slot_no
+        self.car.ticket = self
+
+    def __repr__(self):
+        return f"Ticket for [{self.car.plate_no}, {self.car.color}]"
 
 class Lot:
-    def __init__(self):
-        self.max_space = 6
-        self.spots = {}
-        self.populate()
+    def __init__(self, capacity):
+        self.max_space = int(capacity)
+        self.slots = {}
+        self.build_lot()
 
-    def populate(self):
+    def build_lot(self):
         for lot in range(1, self.max_space + 1):
-            self.spots[lot] = ""
+            self.slots[lot] = ""
         return
 
     def is_empty(self):
-        # return a list of empty lots in ascending order
+        # return a list of empty slots in ascending order
         empty = []
-        for lot_no in self.spots:
-            if self.spots[lot_no] == "":
-                empty.append(lot_no)
+        for slot_no in self.slots.keys():
+            if self.slots[slot_no] == "":
+                empty.append(slot_no)
         return empty
 
-    def assign_ticket(self, lot_no, car):
-        # assign a ticket to a car for an open space
-        if len(self.spots) > self.max_space:
-            return # return some sort of error
-        self.spots[lot_no]= car
-        ticket = Ticket(car, lot_no)
-        car.parked = True
+    def assign_ticket(self, slot_no, car):
+        if len(self.slots) > self.max_space:
+            raise NotEmpty("This parking lot is fully occupied.")
 
-def entry(plate_no, color):
+        self.slots[slot_no] = car
+        Ticket(car, slot_no)
+        return
+
+    def remove_ticket(self, car):
+        self.slots[car.slot_no] = ""
+        car.ticket = None
+        return
+
+def enter(lot, car):
     """Process the entry of a car"""
-    # assign an open space if there is, and give out a ticket
-    if not Lot.is_empty():
-        raise NotEmpty("This Parking Lot is fully booked.")
+    if not lot.is_empty():
+        raise NotEmpty("This parking lot is fully occupied.")
 
-    car = Car(plate_no, color)
+    free_lot = lot.is_empty()[0]
+    lot.assign_ticket(free_lot, car)
 
-    empty_lots = Lot.is_empty()
-    free_lot = empty_lots[0]
-    Lot.assign_ticket(free_lot, car)
-
-def exit(car):
+def exit(lot, car):
     """Process the exit of a car."""
-    pass
+    lot.remove_ticket(car)
 
-Lot = Lot()
+green_lot = Lot(6)
+car = Car("axs0989", "matte black")
+
+enter(green_lot, car)
+exit(green_lot, car)
