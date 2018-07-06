@@ -59,7 +59,7 @@ class Lot:
 def enter(lot, car):
     """Process the entry of a car"""
     if not lot.is_empty():
-        raise NotEmpty("This parking lot is fully occupied.")
+        raise NotEmpty("Sorry, parking lot is full.")
 
     free_lot = lot.is_empty()[0]
     lot.assign_ticket(free_lot, car)
@@ -67,6 +67,15 @@ def enter(lot, car):
 def exit(lot, car):
     """Process the exit of a car."""
     lot.remove_ticket(car)
+
+def find_plate_nos(color):
+    pass
+
+def find_slot_no(plate_no):
+    pass
+
+def find_slot_nos(color):
+    pass
 
 green_lot = Lot(6)
 car = Car("axs0989", "matte black")
