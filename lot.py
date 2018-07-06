@@ -12,6 +12,9 @@ class Car:
         self.lot_no = None
         self.ticket = None
 
+    def __repr__(self):
+        return f"[{self.plate_no}, {self.color}]"
+
 class Ticket:
     def __init__(self, car, lot_no):
         self.lot_no = None
@@ -39,8 +42,9 @@ class Lot:
         # assign a ticket to a car for an open space
         if len(self.spots) > self.max_space:
             return # return some sort of error
-        self.spots[lot_no]= [car.plate_no, car.color]
+        self.spots[lot_no]= car
         ticket = Ticket(car, lot_no)
+        car.parked = True
 
 def entry(plate_no, color):
     """Process the entry of a car"""
@@ -53,5 +57,9 @@ def entry(plate_no, color):
     empty_lots = Lot.is_empty()
     free_lot = empty_lots[0]
     Lot.assign_ticket(free_lot, car)
+
+def exit(car):
+    """Process the exit of a car."""
+    pass
 
 Lot = Lot()
