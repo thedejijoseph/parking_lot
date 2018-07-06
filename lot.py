@@ -6,8 +6,8 @@ class NotEmpty(Exception):
 
 class Car:
     def __init__(self, plate_no, color):
-        self.plate_no = str(plate_no)
-        self.color = str(color)
+        self.plate_no = str(plate_no).upper()
+        self.color = str(color).title()
         self.parked = False
         self.lot_no = None
         self.ticket = None
